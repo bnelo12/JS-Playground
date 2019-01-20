@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>JavaScript Playground</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.7.0/umd/react.production.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.7.0/umd/react-dom.production.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    </head>
+    <body>
+
+        <h1>Ben's Javascript Playground</h1>
+
+        <h1>Balloon Demo</h1>
+
+        <div id="balloon">🎈</div>
+        <p>Press up and down arrow keys to inflate and deflate the balloon respectively.</p>
+
+        <style>
+            .trail {
+                position: absolute;
+                height: 6px; width: 6px;
+                border-radius: 3px;
+                background: teal;
+            }
+        </style>
+
+        <div style="position: absolute; top: 0; left: 0;" id="mouseTrails"></div>
+
+        <script>
+
+            var mouseTrailContainer = document.getElementById('mouseTrails');
+
+            let scheduled = null;
+            window.addEventListener("mousemove", event => {
+                if (!scheduled) {
+                    setTimeout(() => {
+                        var x = scheduled.pageX;
+                        var y = scheduled.pageY;
+                        var newNode = document.createElement("div");
+                        newNode.className = "trail";
+                        newNode.style.left = `${x}px`;
+                        newNode.style.top = `${y}px`;
+                        mouseTrailContainer.appendChild(newNode);
+                        if (mouseTrailContainer.childElementCount > 20) {
+                            mouseTrailContainer.removeChild(mouseTrailContainer.childNodes[0]);
+                        }
+                        scheduled = null;
+                    }, 10);
+                }
+                scheduled = event;
+            });
+            setInterval(() => {
+                if (!scheduled && mouseTrailContainer.childElementCount > 0) {
+                    mouseTrailContainer.removeChild(mouseTrailContainer.childNodes[0]);
+                }
+            }, 16);
+        </script>
+
+        <script>
+            var currentSize = 16;
+
+
+
+            var balloon = document.getElementById('balloon');
+            balloon.style.fontSize = `${currentSize}px`;
+
+            var inflate;
+            var deflate;
+
+            function handleKeyDown(event) {
+                if (event.key === "ArrowUp") {
+                    window.removeEventListener('keydown', handleKeyDown);
+                    inflate = setInterval(() => {
+                        currentSize *= 1.01;
+                        balloon.style.fontSize = `${currentSize}px`;
+                        if (currentSize > 100) {
+                            balloon.innerHTML = "💥";
+                            clearInterval(inflate)
+                        } 
+                    }, 12);
+                    event.preventDefault();
+                }
+                if (event.key === "ArrowDown") {
+                    window.removeEventListener('keydown', handleKeyDown);
+                    deflate = setInterval(() => {
+                        currentSize *= .99;
+                        balloon.style.fontSize = `${currentSize}px`;
+                    }, 12);
+                    event.preventDefault();
+                }
+            }
+
+            window.addEventListener('keydown', handleKeyDown);
+
+            window.addEventListener('keyup', function inflateDeflate() {
+                if (event.key === "ArrowUp") {
+                    window.removeEventListener('keydown', handleKeyDown);
+                    if (currentSize <= 100) {
+                        window.addEventListener('keydown', handleKeyDown);
+                    }
+                    clearInterval(inflate);
+                }
+                else if (event.key === "ArrowDown") {
+                    window.removeEventListener('keydown', handleKeyDown);
+                    if (currentSize <= 100) {
+                        window.addEventListener('keydown', handleKeyDown);
+                    }
+                    clearInterval(deflate);
+                }
+                balloon.style.fontSize = `${currentSize}px`;
+            });
+
+        </script>
+
+        <h1>Document Selector Demo</h1>
+
+        <h2>Mountains</h2>
+
+        <div id="mountains"></div>
+
+        <script>
+
+        // Using built in dom manipulation
+
+        const MOUNTAINS = [
+            {name: "Kilimanjaro", height: 5895, place: "Tanzania"},
+            {name: "Everest", height: 8848, place: "Nepal"},
+            {name: "Mount Fuji", height: 3776, place: "Japan"},
+            {name: "Vaalserberg", height: 323, place: "Netherlands"},
+            {name: "Denali", height: 6168, place: "United States"},
+            {name: "Popocatepetl", height: 5465, place: "Mexico"},
+            {name: "Mont Blanc", height: 4808, place: "Italy/France"}
+        ];
+
+        var el = document.getElementById('mountains');
+        var table = document.createElement("table");
+        MOUNTAINS.forEach((mountain, idx) => {
+            var row = table.insertRow();
+            for (var property in mountain) {
+                row.insertCell().appendChild(
+                    document.createTextNode(mountain[property])
+                )
+            };
+        });
+        el.appendChild(table);
+
+        </script>
+        <h1>React Menu Demo</h1>
+        <div id="root"></div>
+        <script type="text/jsx">
+
+            const IngredientList =({ingredients}) => 
+                <div className="ingredient-list">
+                    {String(ingredients)}
+                </div>
+
+            const Item =({name, ingredients}) =>
+                <div>
+                    <h3>{name}</h3>
+                    <IngredientList ingredients={ingredients}/>
+                </div>
+            const Menu = ({title, items}) => 
+                <article>
+                    <header>
+                        <h1>{title}</h1>
+                    </header>
+                    <div className="items">
+                        {items.map((item, idx) =>
+                            <Item key={idx} {...item}/>
+                        )}
+                    </div>
+                </article>
+
+            const data = {
+                "Breakfast": [
+                    {name: "Smoked Salmon on Cream Cheese Bagel", ingredients: ["salmon", "bagel", "cream cheese"]},
+                    {name: "Avocado Toast", ingredients: ["avocado", "black pepper", "whole weat toast"]},
+                    {name: "Ham and Cheese Omlette", ingredients: ["ham", "cheese", "egg"]}
+                ]
+            }
+
+            ReactDOM.render(
+                <Menu title="Breakfast" items={data["Breakfast"]}/>,
+                document.getElementById('root')
+            );
+
+      </script>
+    </body>
+</html>
