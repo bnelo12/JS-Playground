@@ -27,7 +27,7 @@
 
         <div style="position: absolute; top: 0; left: 0;" id="mouseTrails"></div>
 
-        <script>
+        <!-- <script>
 
             var mouseTrailContainer = document.getElementById('mouseTrails');
 
@@ -55,7 +55,7 @@
                     mouseTrailContainer.removeChild(mouseTrailContainer.childNodes[0]);
                 }
             }, 16);
-        </script>
+        </script> -->
 
         <script>
             var currentSize = 16;
@@ -147,7 +147,7 @@
 
         </script>
         <h1>React Menu Demo</h1>
-        <div id="root"></div>
+        <div id="root1"></div>
         <script type="text/jsx">
 
             const IngredientList =({ingredients}) => 
@@ -182,9 +182,145 @@
 
             ReactDOM.render(
                 <Menu title="Breakfast" items={data["Breakfast"]}/>,
-                document.getElementById('root')
+                document.getElementById('root1')
             );
 
-      </script>
+        </script>
+        <h1>React Refs Demo</h1>
+        <div id="root2"></div>
+
+        <style>
+            .star {
+                cursor: pointer;
+                height: 25px;
+                width: 25px;
+                margin: 2px;
+                float: left;
+                background-color: grey;
+                clip-path: polygon(
+                    50% 0%,
+                    63% 30%,
+                    100% 38%,
+                    69% 59%,
+                    82% 100%,
+                    50% 75%,
+                    18% 100%,
+                    31% 59%,
+                    0% 38%,
+                    37% 38%
+                );
+            }
+            .star.selected {
+                background-color: red;
+            }
+        </style>
+
+        <script type="text/jsx">
+        
+            class AddColorForm extends React.Component {
+
+                constructor(props) {
+                    super(props);
+                    this.submit = this.submit.bind(this);
+                }
+
+                submit(e) {
+                    const {_title, _color} = this.refs;
+                    e.preventDefault();
+                    alert(`New Color: ${_title.value} ${_color.value}`);
+                    _title.value = "";
+                    _color.value = "#000000";
+                    _title.focus();
+                }
+
+                render() {
+                    return (
+                        <form onSubmit={this.submit}>
+                            <input ref="_title" type="text" placeholder="color title" required/>
+                            <input ref="_color" type="color" required/>
+                            <button>Add</button>
+                        </form>
+                    )
+                }
+            }
+
+            ReactDOM.render(
+                <AddColorForm/>,
+                document.getElementById('root2')
+            );
+
+        </script>
+        <h1>React Staeful Component Demo</h1>
+        <div id="root3"></div>
+
+        <style>
+            .star {
+                cursor: pointer;
+                height: 25px;
+                width: 25px;
+                margin: 2px;
+                float: left;
+                background-color: grey;
+                clip-path: polygon(
+                    50% 0%,
+                    63% 30%,
+                    100% 38%,
+                    69% 59%,
+                    82% 100%,
+                    50% 75%,
+                    18% 100%,
+                    31% 59%,
+                    0% 38%,
+                    37% 38%
+                );
+            }
+            .star.selected {
+                background-color: red;
+            }
+        </style>
+
+        <script type="text/jsx">
+
+            const Star = ({selected=false, onClick=f=>f}) => 
+                <div className={(selected) ? "star selected" : "star"} onClick={onClick}>
+                </div>
+
+            class StarRating extends React.Component {
+
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        starsSelected: 0
+                    }
+                    this.change = this.change.bind(this);
+                }
+
+                change(starsSelected) {
+                    this.setState({starsSelected});
+                }
+
+                render() {
+                    const {totalStars} = this.props;
+                    const {starsSelected} = this.state;
+
+                    return (
+                        <div className="star-rating">
+                            {
+                                Array(totalStars).fill(0).map((n, i) => 
+                                    <Star key={i} selected={i < starsSelected} onClick={() => this.change(i+1)}/>
+                                )
+                            }
+                        </div>
+                    );
+
+                }
+
+            }
+
+            ReactDOM.render(
+                <StarRating totalStars={5}/>,
+                document.getElementById('root3')
+            );
+        </script>
     </body>
 </html>
