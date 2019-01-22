@@ -25,6 +25,9 @@
             }
         </style>
 
+        <h1>Mouse Trails Demo</h1>
+        <button onClick="addMouseTrails()">Click to Add Mouse Trails!</button>
+
         <div style="position: absolute; top: 0; left: 0;" id="mouseTrails"></div>
 
         <script>
@@ -32,29 +35,34 @@
             var mouseTrailContainer = document.getElementById('mouseTrails');
 
             let scheduled = null;
-            window.addEventListener("mousemove", event => {
-                if (!scheduled) {
-                    setTimeout(() => {
-                        var x = scheduled.pageX;
-                        var y = scheduled.pageY;
-                        var newNode = document.createElement("div");
-                        newNode.className = "trail";
-                        newNode.style.left = `${x}px`;
-                        newNode.style.top = `${y}px`;
-                        mouseTrailContainer.appendChild(newNode);
-                        if (mouseTrailContainer.childElementCount > 20) {
-                            mouseTrailContainer.removeChild(mouseTrailContainer.childNodes[0]);
-                        }
-                        scheduled = null;
-                    }, 10);
-                }
-                scheduled = event;
-            });
+
+            function addMouseTrails() {
+                window.addEventListener("mousemove", event => {
+                    if (!scheduled) {
+                        setTimeout(() => {
+                            var x = scheduled.pageX;
+                            var y = scheduled.pageY;
+                            var newNode = document.createElement("div");
+                            newNode.className = "trail";
+                            newNode.style.left = `${x}px`;
+                            newNode.style.top = `${y}px`;
+                            mouseTrailContainer.appendChild(newNode);
+                            if (mouseTrailContainer.childElementCount > 20) {
+                                mouseTrailContainer.removeChild(mouseTrailContainer.childNodes[0]);
+                            }
+                            scheduled = null;
+                        }, 10);
+                    }
+                    scheduled = event;
+                });
+            }
+           
             setInterval(() => {
                 if (!scheduled && mouseTrailContainer.childElementCount > 0) {
                     mouseTrailContainer.removeChild(mouseTrailContainer.childNodes[0]);
                 }
             }, 16);
+
         </script>
 
         <script>
@@ -111,6 +119,51 @@
                 balloon.style.fontSize = `${currentSize}px`;
             });
 
+        </script>
+
+        <style>
+            .ripple > * {
+                display: inline-block;
+                text-align: center;
+                font-size: 2em;
+                cursor: pointer;
+            }
+            .ripple:hover > * {
+                animation: rippleEffect 5s infinite;
+            }
+
+            @keyframes rippleEffect {
+                40% {
+                    opacity: .35;
+                }
+                50% {
+                    transform: translate3d(.5em, 0, 0) scale(1.1);
+                    text-shadow: 0 0 20px black;
+                }
+                75% {
+                    transform: translate3d(0, 0, 0) scale(1);
+                    text-shadow: 0 0 0 black;
+                    opacity: 1;
+                }
+            }
+
+        </style>
+
+        <h1>Ripple Demo</h1>
+        <article class="ripple">
+            This text should ripple when hovered!
+        </article>
+
+        <script>
+            var nodes = document.querySelectorAll(".ripple");
+            for (var i = 0; i < nodes.length; i++) {
+                var letters = nodes[i].innerText.split("").join('</span><span>').split(' ').join('&nbsp;');
+                nodes[i].innerHTML= "<span>" + letters + "</span>";
+                var children = nodes[i].childNodes;
+                for (var n = 0; n < children.length; n++) {
+                    children[n].style.animationDelay = (n/10) + "s";
+                }
+            }
         </script>
 
         <h1>Document Selector Demo</h1>
@@ -199,7 +252,7 @@
                 background-color: grey;
                 clip-path: polygon(
                     50% 0%,
-                    63% 30%,
+                    63% 38%,
                     100% 38%,
                     69% 59%,
                     82% 100%,
@@ -250,34 +303,8 @@
             );
 
         </script>
-        <h1>React Staeful Component Demo</h1>
+        <h1>React Stateful Component Demo</h1>
         <div id="root3"></div>
-
-        <style>
-            .star {
-                cursor: pointer;
-                height: 25px;
-                width: 25px;
-                margin: 2px;
-                float: left;
-                background-color: grey;
-                clip-path: polygon(
-                    50% 0%,
-                    63% 30%,
-                    100% 38%,
-                    69% 59%,
-                    82% 100%,
-                    50% 75%,
-                    18% 100%,
-                    31% 59%,
-                    0% 38%,
-                    37% 38%
-                );
-            }
-            .star.selected {
-                background-color: red;
-            }
-        </style>
 
         <script type="text/jsx">
 
